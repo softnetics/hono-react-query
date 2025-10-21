@@ -27,6 +27,7 @@ A type-safe React Query integration for Hono applications that provides seamless
 - [Key Management](#key-management)
 - [Limitation](#limitation)
 - [License](#license)
+- [Contributors](#contributors)
 - [Contributing](#contributing)
 
 ## Features
@@ -342,6 +343,13 @@ const app = new Hono().get('/users', (c) => {
 
 MIT
 
+## Contributors
+
+<a href="https://github.com/softnetics/hono-react-query/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=OWNER/REPO" />
+</a>
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
