@@ -1,0 +1,55 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  NODE_VERSION: 22.14.0
+  PNPM_VERSION: 9.0.0
+
+jobs:
+  ci:
+    if: ${{ github.event_name == 'push' || (!contains(github.event.pull_request.title, 'DRAFT') && !contains(github.event.pull_request.title, 'Draft') && !contains(github.event.pull_request.title, 'draft') && !contains(github.event.pull_request.labels.*.name, 'draft')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup node with cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm run lint
+
+      - name: Run format check
+        run: pnpm run format:check
+
+      - name: Run typecheck
+        run: pnpm run typecheck
+
+      - name: Run test
+        run: pnpm run test
+
+      - name: Run build
+        run: pnpm run build
