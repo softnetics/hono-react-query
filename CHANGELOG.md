@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.0
+
+### Minor Changes
+
+- [#2](https://github.com/softnetics/hono-react-query/pull/2) [`e535f40`](https://github.com/softnetics/hono-react-query/commit/e535f40d0debbc4d4348aa1ff57f0776009da2a8) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Introduce useQuery with DefinedUseQueryResult type and queryOptions with DefinedInitialDataOptions
+
 ## 1.0.0
 
 ### Major Changes
