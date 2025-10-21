@@ -88,7 +88,12 @@ function useQueryFactory<T extends Record<string, any>>(
 ): UseHonoQuery<T> {
   return ((path, method, honoPayload, hookOptions) => {
     return useQuery(
-      queryOptionsFactory(client)(path.toString(), method, honoPayload as any, hookOptions as any)
+      queryOptionsFactory(client)(
+        path.toString(),
+        method,
+        honoPayload as any,
+        hookOptions as any
+      ) as any
     )
   }) as UseHonoQuery<T>
 }
@@ -112,7 +117,7 @@ function queryOptionsFactory<T extends Record<string, any>>(
         return responseParser(response)
       },
       ...hookOptions,
-    })
+    }) as any
   }
 }
 
