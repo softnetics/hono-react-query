@@ -1,6 +1,8 @@
 import type {
+  DefinedInitialDataOptions,
   DefinedUseQueryResult,
   InvalidateQueryFilters,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -81,7 +83,10 @@ export type UseHonoQuery<TApp extends Record<string, any>> = <
       SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
       ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
     >
-  : typeof queryOptions
+  : UseQueryResult<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >
 
 export type UseHonoMutation<TApp extends Record<string, any>> = <
   TPath extends keyof TApp,
@@ -111,13 +116,13 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
   TPath extends keyof TApp,
   TMethod extends keyof TApp[TPath],
   TQueryOptions extends Omit<
-    UseQueryOptions<
+    UndefinedInitialDataOptions<
       SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
       ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
     >,
     'queryKey' | 'queryFn'
   > = Omit<
-    UseQueryOptions<
+    UndefinedInitialDataOptions<
       SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
       ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
     >,
@@ -129,11 +134,14 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
   honoPayload: HonoPayload<InferFunctionInput<TApp[TPath][TMethod]>>,
   queryOptions?: TQueryOptions
 ) => 'initialData' extends keyof TQueryOptions
-  ? DefinedUseQueryResult<
+  ? DefinedInitialDataOptions<
       SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
       ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
     >
-  : typeof queryOptions
+  : UndefinedInitialDataOptions<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >
 
 export type HonoMutationOptions<TApp extends Record<string, any>> = <
   TPath extends keyof TApp,
