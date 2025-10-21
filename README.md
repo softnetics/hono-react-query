@@ -136,6 +136,8 @@ export function UserList() {
       toast.error(error.data.error, { id: context?.toastId })
     },
   })
+  
+  createUserMutation.mutateAsync({ json: { name: 'John Doe' } })
 }
 ```
 
@@ -322,8 +324,8 @@ if (error && isHonoResponseError(error)) {
 The library automatically generates query keys based on the path, method, and payload. You can access the key generation function:
 
 ```typescript
-const queryOptions = reactQueryClient.queryOptions('/users', '$get', { query: { limit: 10 } })
-const queryKey = queryOptions.queryKey // ["$get", "/users", { query: { limit: 10 } }]
+const queryOptions = reactQueryClient.queryOptions('/users', '$get', { input: { query: { limit: 10 } } })
+const queryKey = queryOptions.queryKey //  ["/users", "$get", { query: { limit: 10 } }]
 ```
 
 ## Limitation
