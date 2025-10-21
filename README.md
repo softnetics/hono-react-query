@@ -346,7 +346,7 @@ MIT
 ## Contributors
 
 <a href="https://github.com/softnetics/hono-react-query/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=OWNER/REPO" />
+  <img src="https://contrib.rocks/image?repo=softnetics/hono-react-query" />
 </a>
 
 ## Contributing
