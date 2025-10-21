@@ -25,8 +25,6 @@ const basicHonoApp = new Hono()
 type BasicHonoApp = typeof basicHonoApp
 
 describe('createReactQueryClient', () => {
-  let wrapper: (children: React.ReactNode) => React.ReactNode
-
   it('should create the query client with the correct methods', () => {
     const client = createReactQueryClient<BasicHonoApp>({
       baseUrl: 'http://localhost:3000',
