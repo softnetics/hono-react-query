@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.3
+
+### Patch Changes
+
+- [`533d414`](https://github.com/softnetics/hono-react-query/commit/533d414b7b476863fae089c3dd21a580808d7780) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Change export file misconfigure
+
 ## 1.1.2
 
 ### Patch Changes
