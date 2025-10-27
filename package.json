@@ -9,6 +9,7 @@
     "dist"
   ],
   "publishConfig": {
+    "access": "public",
     "exports": {
       ".": {
         "import": "./dist/src/index.js",
