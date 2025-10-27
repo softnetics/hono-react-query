@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.1
+
+### Patch Changes
+
+- [`f195520`](https://github.com/softnetics/hono-react-query/commit/f19552065b9fec042f0148ab8af19c2b5bc942cb) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Remove private true in package.json to publish to npm
+
 ## 1.1.0
 
 ### Minor Changes
