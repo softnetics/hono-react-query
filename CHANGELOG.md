@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.2
+
+### Patch Changes
+
+- [`45b852f`](https://github.com/softnetics/hono-react-query/commit/45b852f4be4d17b118a08d2b5f5a96cbcde6f5e8) Thanks [@saenyakorn](https://github.com/saenyakorn)! - change publish access to public
+
 ## 1.1.1
 
 ### Patch Changes
