@@ -1,4 +1,8 @@
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
+import {
+  type DefinedInitialDataOptions,
+  type UseMutationResult,
+  type UseQueryResult,
+} from '@tanstack/react-query'
 import { Hono } from 'hono'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 
@@ -12,6 +16,7 @@ const basicHonoApp = new Hono()
     if (!c.req.param('id')) {
       return c.json({ error: 'User ID is required' }, 400)
     }
+
     return c.json({ user: { id: 'id', name: 'John Doe' } }, 200)
   })
   .post('/users', async (c) => {
@@ -38,6 +43,86 @@ describe('createReactQueryClient', () => {
     expect(client.useSetQueryData).toBeDefined()
     expect(client.useInvalidateQueries).toBeDefined()
     expect(client.useOptimisticUpdateQuery).toBeDefined()
+  })
+
+  it('Should contain Error in Data', () => {
+    const client = createReactQueryClient<BasicHonoApp>({
+      baseUrl: 'http://localhost:3000',
+    })
+
+    const queryOptions = client.queryOptions('/users/:id', '$get', {
+      input: {
+        param: { id: 'none' },
+      },
+      options: {
+        throwOnError: false,
+      },
+    })
+
+    type DataAndError =
+      typeof queryOptions extends DefinedInitialDataOptions<infer TDataAndError>
+        ? TDataAndError
+        : never
+
+    expectTypeOf<DataAndError>().toEqualTypeOf<
+      | {
+          data: {
+            user: {
+              id: string
+              name: string
+            }
+          }
+          status: 200
+          format: 'json'
+        }
+      | Error
+      | HonoResponseError<
+          {
+            error: string
+          },
+          400,
+          'json'
+        >
+    >()
+  })
+
+  it("Shouldn't contain Error in Data", () => {
+    const client = createReactQueryClient<BasicHonoApp>({
+      baseUrl: 'http://localhost:3000',
+    })
+
+    const queryOptions = client.queryOptions('/users/:id', '$get', {
+      input: {
+        param: { id: 'none' },
+      },
+    })
+
+    type Result =
+      typeof queryOptions extends DefinedInitialDataOptions<infer TData, infer TError>
+        ? { data: TData; error: TError }
+        : never
+
+    expectTypeOf<Result['data']>().toEqualTypeOf<{
+      data: {
+        user: {
+          id: string
+          name: string
+        }
+      }
+      status: 200
+      format: 'json'
+    }>()
+
+    expectTypeOf<Result['error']>().toEqualTypeOf<
+      | Error
+      | HonoResponseError<
+          {
+            error: string
+          },
+          400,
+          'json'
+        >
+    >()
   })
 
   it('should create the query client with the correct types', () => {

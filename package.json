@@ -23,6 +23,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:watch": "vitest run --watch",
     "build": "tsup"
   },
   "peerDependencies": {
