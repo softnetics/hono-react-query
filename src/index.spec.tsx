@@ -83,16 +83,13 @@ describe('createReactQueryClient', () => {
       >
     >()
 
-    const query = client.useQuery('/users/:id', '$get', {
-      input: {
-        param: { id: 'none' },
-      },
-      options: {
-        throwOnError: false,
-      },
-    })
+    const queryFn = () =>
+      client.useQuery('/users/:id', '$get', {
+        input: { param: { id: 'none' } },
+        options: { throwOnError: false },
+      })
 
-    expectTypeOf<typeof query>().toEqualTypeOf<
+    expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
       DefinedUseQueryResult<
         | {
             data: {
@@ -143,16 +140,13 @@ describe('createReactQueryClient', () => {
       >
     >()
 
-    const query = client.useQuery('/users/:id', '$get', {
-      input: {
-        param: { id: 'none' },
-      },
-      options: {
-        throwOnError: true,
-      },
-    })
+    const queryFn = () =>
+      client.useQuery('/users/:id', '$get', {
+        input: { param: { id: 'none' } },
+        options: { throwOnError: true },
+      })
 
-    expectTypeOf<typeof query>().toEqualTypeOf<
+    expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
       DefinedUseQueryResult<
         {
           data: {
