@@ -45,7 +45,7 @@ describe('createReactQueryClient', () => {
     expect(client.useOptimisticUpdateQuery).toBeDefined()
   })
 
-  it('Should contain Error in Data', () => {
+  it('should contain Error in Data', () => {
     const client = createReactQueryClient<BasicHonoApp>({
       baseUrl: 'http://localhost:3000',
     })
@@ -85,7 +85,7 @@ describe('createReactQueryClient', () => {
     >()
   })
 
-  it("Shouldn't contain Error in Data", () => {
+  it('should not contain Error in Data', () => {
     const client = createReactQueryClient<BasicHonoApp>({
       baseUrl: 'http://localhost:3000',
     })
