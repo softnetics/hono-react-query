@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.5
+
+### Patch Changes
+
+- [#9](https://github.com/softnetics/hono-react-query/pull/9) [`196d9ce`](https://github.com/softnetics/hono-react-query/commit/196d9ce7649a1813cb1d59ab14a04621eda2c27d) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix `queryOptions` and `useQuery` type for throwOnError
+
 ## 1.1.4
 
 ### Patch Changes
