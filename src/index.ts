@@ -55,7 +55,7 @@ function getter(obj: object, paths: string[]): any {
   }, obj)
 }
 
-async function responseParser(response: Response): Promise<any> {
+async function responseParser(response: Response, throwOnError?: boolean): Promise<any> {
   let data: any
   const contentType = response.headers.get('content-type')
   if (contentType?.includes('application/json')) {
@@ -78,6 +78,8 @@ async function responseParser(response: Response): Promise<any> {
 
   if (response.ok) {
     return res
+  } else if (!throwOnError) {
+    return new HonoResponseError(res)
   } else {
     throw new HonoResponseError(res)
   }
@@ -106,6 +108,8 @@ function queryOptionsFactory<T extends Record<string, any>>(
     const handler = getter(client, paths)
     const payload = (honoPayload as any)?.input ?? {}
 
+    const isThrowOnError = honoPayload.options?.throwOnError ?? true
+
     return queryOptions({
       queryKey: createQueryKey(
         method.toString(),
@@ -114,7 +118,7 @@ function queryOptionsFactory<T extends Record<string, any>>(
       ),
       queryFn: async () => {
         const response = await handler(payload, honoPayload.options)
-        return responseParser(response)
+        return responseParser(response, isThrowOnError)
       },
       ...hookOptions,
     }) as any
