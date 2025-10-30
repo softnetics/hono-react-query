@@ -140,9 +140,7 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
 ) => 'initialData' extends keyof TQueryOptions
   ? TOptions extends { throwOnError: false }
     ? DefinedInitialDataOptions<
-        | SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | Error,
+        ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
         DefaultError
       >
     : DefinedInitialDataOptions<
@@ -151,9 +149,7 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
       >
   : TOptions extends { throwOnError: false }
     ? UndefinedInitialDataOptions<
-        | SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | Error,
+        ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
         DefaultError
       >
     : UndefinedInitialDataOptions<

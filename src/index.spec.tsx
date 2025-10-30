@@ -75,14 +75,13 @@ describe('createReactQueryClient', () => {
           status: 200
           format: 'json'
         }
-      | Error
-      | HonoResponseError<
-          {
+      | {
+          data: {
             error: string
-          },
-          400,
-          'json'
-        >
+          }
+          status: 400
+          format: 'json'
+        }
     >()
   })
 

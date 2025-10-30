@@ -76,13 +76,11 @@ async function responseParser(response: Response, throwOnError?: boolean): Promi
         : 'body',
   }
 
-  if (response.ok) {
+  if (response.ok || !throwOnError) {
     return res
-  } else if (!throwOnError) {
-    return new HonoResponseError(res)
-  } else {
-    throw new HonoResponseError(res)
   }
+
+  throw new HonoResponseError(res)
 }
 
 function useQueryFactory<T extends Record<string, any>>(
