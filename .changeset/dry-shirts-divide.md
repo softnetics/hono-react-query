@@ -2,4 +2,4 @@
 "@softnetics/hono-react-query": patch
 ---
 
-Fix: `queryOptions` type with throwOnError
+Fix `queryOptions` and `useQuery` type for throwOnError
