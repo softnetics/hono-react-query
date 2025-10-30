@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.4
+
+### Patch Changes
+
+- [#7](https://github.com/softnetics/hono-react-query/pull/7) [`785b8e2`](https://github.com/softnetics/hono-react-query/commit/785b8e2c13b3a64a59b0f740fdc03ef925f0b617) Thanks [@SupakornNetsuwan](https://github.com/SupakornNetsuwan)! - add: `throwOnError` options and test cases.
+
 ## 1.1.3
 
 ### Patch Changes
