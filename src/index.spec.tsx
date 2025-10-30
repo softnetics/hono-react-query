@@ -1,5 +1,6 @@
 import {
   type DefinedInitialDataOptions,
+  type DefinedUseQueryResult,
   type UseMutationResult,
   type UseQueryResult,
 } from '@tanstack/react-query'
@@ -45,7 +46,7 @@ describe('createReactQueryClient', () => {
     expect(client.useOptimisticUpdateQuery).toBeDefined()
   })
 
-  it('Should contain Error in Data', () => {
+  it('should contain Error in Data when throwOnError is false', () => {
     const client = createReactQueryClient<BasicHonoApp>({
       baseUrl: 'http://localhost:3000',
     })
@@ -59,34 +60,60 @@ describe('createReactQueryClient', () => {
       },
     })
 
-    type DataAndError =
-      typeof queryOptions extends DefinedInitialDataOptions<infer TDataAndError>
-        ? TDataAndError
-        : never
-
-    expectTypeOf<DataAndError>().toEqualTypeOf<
-      | {
-          data: {
-            user: {
-              id: string
-              name: string
+    expectTypeOf<typeof queryOptions>().toEqualTypeOf<
+      DefinedInitialDataOptions<
+        | {
+            data: {
+              user: {
+                id: string
+                name: string
+              }
             }
+            status: 200
+            format: 'json'
           }
-          status: 200
-          format: 'json'
-        }
-      | Error
-      | HonoResponseError<
-          {
-            error: string
+        | {
+            data: {
+              error: string
+            }
+            status: 400
+            format: 'json'
           },
-          400,
-          'json'
-        >
+        Error
+      >
+    >()
+
+    const queryFn = () =>
+      client.useQuery('/users/:id', '$get', {
+        input: { param: { id: 'none' } },
+        options: { throwOnError: false },
+      })
+
+    expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+      DefinedUseQueryResult<
+        | {
+            data: {
+              user: {
+                id: string
+                name: string
+              }
+            }
+            status: 200
+            format: 'json'
+          }
+        | {
+            data: {
+              error: string
+            }
+            status: 400
+            format: 'json'
+          },
+        Error
+      >
     >()
   })
 
-  it("Shouldn't contain Error in Data", () => {
+  it('should not contain Error in Data when throwOnError is true', () => {
     const client = createReactQueryClient<BasicHonoApp>({
       baseUrl: 'http://localhost:3000',
     })
@@ -97,31 +124,49 @@ describe('createReactQueryClient', () => {
       },
     })
 
-    type Result =
-      typeof queryOptions extends DefinedInitialDataOptions<infer TData, infer TError>
-        ? { data: TData; error: TError }
-        : never
+    expectTypeOf<typeof queryOptions>().toEqualTypeOf<
+      DefinedInitialDataOptions<
+        {
+          data: {
+            user: {
+              id: string
+              name: string
+            }
+          }
+          status: 200
+          format: 'json'
+        },
+        Error | HonoResponseError<{ error: string }, 400, 'json'>
+      >
+    >()
 
-    expectTypeOf<Result['data']>().toEqualTypeOf<{
-      data: {
-        user: {
-          id: string
-          name: string
-        }
-      }
-      status: 200
-      format: 'json'
-    }>()
+    const queryFn = () =>
+      client.useQuery('/users/:id', '$get', {
+        input: { param: { id: 'none' } },
+        options: { throwOnError: true },
+      })
 
-    expectTypeOf<Result['error']>().toEqualTypeOf<
-      | Error
-      | HonoResponseError<
-          {
-            error: string
-          },
-          400,
-          'json'
-        >
+    expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+      DefinedUseQueryResult<
+        {
+          data: {
+            user: {
+              id: string
+              name: string
+            }
+          }
+          status: 200
+          format: 'json'
+        },
+        | Error
+        | HonoResponseError<
+            {
+              error: string
+            },
+            400,
+            'json'
+          >
+      >
     >()
   })
 

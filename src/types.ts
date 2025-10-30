@@ -76,20 +76,28 @@ export type UseHonoQuery<TApp extends Record<string, any>> = <
     >,
     'queryKey' | 'queryFn'
   >,
+  TOptions extends HonoPayloadOptions | undefined = HonoPayloadOptions | undefined,
 >(
   path: TPath,
   method: TMethod,
-  honoPayload: HonoPayload<InferFunctionInput<TApp[TPath][TMethod]>>,
+  honoPayload: HonoPayload<InferFunctionInput<TApp[TPath][TMethod]>, TOptions>,
   queryOptions?: TQueryOptions
 ) => 'initialData' extends keyof TQueryOptions
-  ? DefinedUseQueryResult<
-      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
-      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
-    >
-  : UseQueryResult<
-      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
-      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
-    >
+  ? TOptions extends { throwOnError: false }
+    ? DefinedUseQueryResult<
+        ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
+        DefaultError
+      >
+    : DefinedUseQueryResult<
+        SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+        ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+      >
+  : TOptions extends { throwOnError: false }
+    ? UseQueryResult<ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>, DefaultError>
+    : UseQueryResult<
+        SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+        ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+      >
 
 export type UseHonoMutation<TApp extends Record<string, any>> = <
   TPath extends keyof TApp,
@@ -140,9 +148,7 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
 ) => 'initialData' extends keyof TQueryOptions
   ? TOptions extends { throwOnError: false }
     ? DefinedInitialDataOptions<
-        | SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | Error,
+        ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
         DefaultError
       >
     : DefinedInitialDataOptions<
@@ -151,9 +157,7 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
       >
   : TOptions extends { throwOnError: false }
     ? UndefinedInitialDataOptions<
-        | SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
-        | Error,
+        ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
         DefaultError
       >
     : UndefinedInitialDataOptions<
