@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.6
+
+### Patch Changes
+
+- [#11](https://github.com/softnetics/hono-react-query/pull/11) [`9d9aba6`](https://github.com/softnetics/hono-react-query/commit/9d9aba622b5d8251185c44fa4bb662f47a51e7ec) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix throw response when throwOnError is undefined
+
 ## 1.1.5
 
 ### Patch Changes
