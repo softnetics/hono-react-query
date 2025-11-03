@@ -76,7 +76,7 @@ async function responseParser(response: Response, throwOnError?: boolean): Promi
         : 'body',
   }
 
-  if (response.ok || !throwOnError) {
+  if (response.ok || throwOnError === false) {
     return res
   }
 
