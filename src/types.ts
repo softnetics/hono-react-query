@@ -229,7 +229,7 @@ export type UseHonoOptimisticUpdateQuery<TApp extends Record<string, any>> = <
 ) => (
   updater: (
     prev: SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | undefined
-  ) => SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
+  ) => SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | undefined
 ) =>
   | {
       previous: SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | undefined
