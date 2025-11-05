@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.1.7
+
+### Patch Changes
+
+- [#13](https://github.com/softnetics/hono-react-query/pull/13) [`1e9eb7a`](https://github.com/softnetics/hono-react-query/commit/1e9eb7ad61dce18fcd2978da79421fb75485b5aa) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix: optimistic update type to return undefined if prev does not exists
+
 ## 1.1.6
 
 ### Patch Changes
