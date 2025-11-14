@@ -1,5 +1,15 @@
 # @softnetics/hono-react-query
 
+## 1.2.0
+
+### Minor Changes
+
+- [#15](https://github.com/softnetics/hono-react-query/pull/15) [`a89fdcb`](https://github.com/softnetics/hono-react-query/commit/a89fdcb9d3392cda2ffa1f84a8fc17d28ce1b67a) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Add Raw Response to the response from the lib.
+
+### Patch Changes
+
+- [#16](https://github.com/softnetics/hono-react-query/pull/16) [`e4b6dc2`](https://github.com/softnetics/hono-react-query/commit/e4b6dc23dec80f8de5829236455e116f45fae586) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix isHonoResponseError does not work properly in production
+
 ## 1.1.7
 
 ### Patch Changes
