@@ -71,6 +71,7 @@ describe('createReactQueryClient', () => {
             }
             status: 200
             format: 'json'
+            raw: Response
           }
         | {
             data: {
@@ -78,6 +79,7 @@ describe('createReactQueryClient', () => {
             }
             status: 400
             format: 'json'
+            raw: Response
           },
         Error
       >
@@ -100,6 +102,7 @@ describe('createReactQueryClient', () => {
             }
             status: 200
             format: 'json'
+            raw: Response
           }
         | {
             data: {
@@ -107,6 +110,7 @@ describe('createReactQueryClient', () => {
             }
             status: 400
             format: 'json'
+            raw: Response
           },
         Error
       >
@@ -135,6 +139,7 @@ describe('createReactQueryClient', () => {
           }
           status: 200
           format: 'json'
+          raw: Response
         },
         Error | HonoResponseError<{ error: string }, 400, 'json'>
       >
@@ -157,6 +162,7 @@ describe('createReactQueryClient', () => {
           }
           status: 200
           format: 'json'
+          raw: Response
         },
         | Error
         | HonoResponseError<
@@ -196,10 +202,16 @@ describe('createReactQueryClient', () => {
     >()
 
     expectTypeOf<ReturnType<typeof client.useSetQueryData<'/users', '$post'>>>().toMatchTypeOf<
-      (data: { data: { user: { id: string; name: string } }; status: 201; format: 'json' }) => {
+      (data: {
         data: { user: { id: string; name: string } }
         status: 201
         format: 'json'
+        raw: Response
+      }) => {
+        data: { user: { id: string; name: string } }
+        status: 201
+        format: 'json'
+        raw: Response
       }
     >()
 
