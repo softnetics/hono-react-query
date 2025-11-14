@@ -1,3 +1,5 @@
+const ERROR_NAME = 'HonoResponseError'
+
 export class HonoResponseError<TData, TStatus, TFormat> extends Error {
   readonly status: TStatus
   readonly data: TData
@@ -5,7 +7,7 @@ export class HonoResponseError<TData, TStatus, TFormat> extends Error {
 
   constructor(response: { status: TStatus; data: TData; format: TFormat }) {
     super(JSON.stringify(response))
-    this.name = 'HonoResponseError'
+    this.name = ERROR_NAME
     this.status = response.status
     this.data = response.data
     this.format = response.format
@@ -15,5 +17,5 @@ export class HonoResponseError<TData, TStatus, TFormat> extends Error {
 export function isHonoResponseError<T>(
   error: T
 ): error is Extract<T, HonoResponseError<any, any, any>> {
-  return error instanceof Error ? error.name === HonoResponseError.name : false
+  return error instanceof Error ? error.name === ERROR_NAME : false
 }
