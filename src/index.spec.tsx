@@ -71,7 +71,7 @@ describe('createReactQueryClient', () => {
             }
             status: 200
             format: 'json'
-            raw: Response
+            headers: Record<string, string>
           }
         | {
             data: {
@@ -79,7 +79,7 @@ describe('createReactQueryClient', () => {
             }
             status: 400
             format: 'json'
-            raw: Response
+            headers: Record<string, string>
           },
         Error
       >
@@ -102,7 +102,7 @@ describe('createReactQueryClient', () => {
             }
             status: 200
             format: 'json'
-            raw: Response
+            headers: Record<string, string>
           }
         | {
             data: {
@@ -110,7 +110,7 @@ describe('createReactQueryClient', () => {
             }
             status: 400
             format: 'json'
-            raw: Response
+            headers: Record<string, string>
           },
         Error
       >
@@ -139,7 +139,7 @@ describe('createReactQueryClient', () => {
           }
           status: 200
           format: 'json'
-          raw: Response
+          headers: Record<string, string>
         },
         Error | HonoResponseError<{ error: string }, 400, 'json'>
       >
@@ -162,7 +162,7 @@ describe('createReactQueryClient', () => {
           }
           status: 200
           format: 'json'
-          raw: Response
+          headers: Record<string, string>
         },
         | Error
         | HonoResponseError<
@@ -206,12 +206,12 @@ describe('createReactQueryClient', () => {
         data: { user: { id: string; name: string } }
         status: 201
         format: 'json'
-        raw: Response
+        headers: Record<string, string>
       }) => {
         data: { user: { id: string; name: string } }
         status: 201
         format: 'json'
-        raw: Response
+        headers: Record<string, string>
       }
     >()
 
