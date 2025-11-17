@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.2.1
+
+### Patch Changes
+
+- [#18](https://github.com/softnetics/hono-react-query/pull/18) [`f4a24f1`](https://github.com/softnetics/hono-react-query/commit/f4a24f184523e2a16ac5b2280f096f71d42ec8d1) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix replace 'raw' with 'headers' in response types and parser
+
 ## 1.2.0
 
 ### Minor Changes
