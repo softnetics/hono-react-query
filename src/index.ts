@@ -56,8 +56,6 @@ function getter(obj: object, paths: string[]): any {
 }
 
 async function responseParser(response: Response, throwOnError?: boolean): Promise<any> {
-  const raw = response.clone()
-
   let data: any
   const contentType = response.headers.get('content-type')
   if (contentType?.includes('application/json')) {
@@ -76,7 +74,7 @@ async function responseParser(response: Response, throwOnError?: boolean): Promi
       : contentType?.includes('text/plain')
         ? 'text'
         : 'body',
-    raw,
+    headers: Object.fromEntries(response.headers.entries()),
   }
 
   if (response.ok || throwOnError === false) {

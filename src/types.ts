@@ -37,7 +37,7 @@ type InferFunctionReturn<T> = T extends (...rest: any[]) => infer TReturn ? Awai
 
 type ClientResponseParser<T> =
   T extends ClientResponse<infer TData, infer TStatus, infer TFormat>
-    ? { data: TData; status: TStatus; format: TFormat; raw: Response }
+    ? { data: TData; status: TStatus; format: TFormat; headers: Record<string, string> }
     : never
 
 type SuccessResponse<T> =
