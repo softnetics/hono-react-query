@@ -3,6 +3,8 @@ import {
   type DefinedUseQueryResult,
   type UseMutationResult,
   type UseQueryResult,
+  type UseSuspenseQueryOptions,
+  type UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 import { Hono } from 'hono'
 import { describe, expect, expectTypeOf, it } from 'vitest'
@@ -46,194 +48,330 @@ describe('createReactQueryClient', () => {
     expect(client.useOptimisticUpdateQuery).toBeDefined()
   })
 
-  it('should contain Error in Data when throwOnError is false', () => {
-    const client = createReactQueryClient<BasicHonoApp>({
-      baseUrl: 'http://localhost:3000',
-    })
-
-    const queryOptions = client.queryOptions('/users/:id', '$get', {
-      input: {
-        param: { id: 'none' },
-      },
-      options: {
-        throwOnError: false,
-      },
-    })
-
-    expectTypeOf<typeof queryOptions>().toEqualTypeOf<
-      DefinedInitialDataOptions<
-        | {
-            data: {
-              user: {
-                id: string
-                name: string
-              }
-            }
-            status: 200
-            format: 'json'
-            headers: Record<string, string>
-          }
-        | {
-            data: {
-              error: string
-            }
-            status: 400
-            format: 'json'
-            headers: Record<string, string>
-          },
-        Error
-      >
-    >()
-
-    const queryFn = () =>
-      client.useQuery('/users/:id', '$get', {
-        input: { param: { id: 'none' } },
-        options: { throwOnError: false },
+  describe('useQuery', () => {
+    it('should contain Error in Data when throwOnError is false', () => {
+      const client = createReactQueryClient<BasicHonoApp>({
+        baseUrl: 'http://localhost:3000',
       })
 
-    expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
-      DefinedUseQueryResult<
-        | {
-            data: {
-              user: {
-                id: string
-                name: string
-              }
-            }
-            status: 200
-            format: 'json'
-            headers: Record<string, string>
-          }
-        | {
-            data: {
-              error: string
-            }
-            status: 400
-            format: 'json'
-            headers: Record<string, string>
-          },
-        Error
-      >
-    >()
-  })
-
-  it('should not contain Error in Data when throwOnError is true', () => {
-    const client = createReactQueryClient<BasicHonoApp>({
-      baseUrl: 'http://localhost:3000',
-    })
-
-    const queryOptions = client.queryOptions('/users/:id', '$get', {
-      input: {
-        param: { id: 'none' },
-      },
-    })
-
-    expectTypeOf<typeof queryOptions>().toEqualTypeOf<
-      DefinedInitialDataOptions<
-        {
-          data: {
-            user: {
-              id: string
-              name: string
-            }
-          }
-          status: 200
-          format: 'json'
-          headers: Record<string, string>
+      const queryOptions = client.queryOptions('/users/:id', '$get', {
+        input: {
+          param: { id: 'none' },
         },
-        Error | HonoResponseError<{ error: string }, 400, 'json'>
-      >
-    >()
-
-    const queryFn = () =>
-      client.useQuery('/users/:id', '$get', {
-        input: { param: { id: 'none' } },
-        options: { throwOnError: true },
+        options: {
+          throwOnError: false,
+        },
       })
 
-    expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
-      DefinedUseQueryResult<
-        {
-          data: {
-            user: {
-              id: string
-              name: string
+      expectTypeOf<typeof queryOptions>().toEqualTypeOf<
+        DefinedInitialDataOptions<
+          | {
+              data: {
+                user: {
+                  id: string
+                  name: string
+                }
+              }
+              status: 200
+              format: 'json'
+              headers: Record<string, string>
             }
-          }
-          status: 200
-          format: 'json'
-          headers: Record<string, string>
-        },
-        | Error
-        | HonoResponseError<
-            {
-              error: string
+          | {
+              data: {
+                error: string
+              }
+              status: 400
+              format: 'json'
+              headers: Record<string, string>
             },
-            400,
-            'json'
-          >
-      >
-    >()
-  })
+          Error
+        >
+      >()
 
-  it('should create the query client with the correct types', () => {
-    const client = createReactQueryClient<BasicHonoApp>({
-      baseUrl: 'http://localhost:3000',
+      const queryFn = () =>
+        client.useQuery('/users/:id', '$get', {
+          input: { param: { id: 'none' } },
+          options: { throwOnError: false },
+        })
+
+      expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+        DefinedUseQueryResult<
+          | {
+              data: {
+                user: {
+                  id: string
+                  name: string
+                }
+              }
+              status: 200
+              format: 'json'
+              headers: Record<string, string>
+            }
+          | {
+              data: {
+                error: string
+              }
+              status: 400
+              format: 'json'
+              headers: Record<string, string>
+            },
+          Error
+        >
+      >()
     })
 
-    // /users routes
-    expectTypeOf<ReturnType<typeof client.useQuery<'/users', '$get'>>>().toMatchTypeOf<
-      UseQueryResult<
-        { data: { users: { id: string; name: string }[] }; status: 200; format: 'json' },
-        Error | HonoResponseError<{ error: string }, 400, 'json'>
-      >
-    >()
+    it('should not contain Error in Data when throwOnError is true', () => {
+      const client = createReactQueryClient<BasicHonoApp>({
+        baseUrl: 'http://localhost:3000',
+      })
 
-    expectTypeOf<ReturnType<typeof client.useMutation<'/users', '$post'>>>().toMatchTypeOf<
-      UseMutationResult<
-        { data: { user: { id: string; name: string } }; status: 201; format: 'json' },
-        Error | HonoResponseError<{ error: string }, 400, 'json'>,
-        {} | undefined
-      >
-    >()
+      const queryOptions = client.queryOptions('/users/:id', '$get', {
+        input: {
+          param: { id: 'none' },
+        },
+      })
 
-    expectTypeOf<ReturnType<typeof client.useGetQueryData<'/users', '$get'>>>().toMatchTypeOf<
-      () => { data: { users: { id: string; name: string }[] }; status: 200; format: 'json' }
-    >()
+      expectTypeOf<typeof queryOptions>().toEqualTypeOf<
+        DefinedInitialDataOptions<
+          {
+            data: {
+              user: {
+                id: string
+                name: string
+              }
+            }
+            status: 200
+            format: 'json'
+            headers: Record<string, string>
+          },
+          Error | HonoResponseError<{ error: string }, 400, 'json'>
+        >
+      >()
 
-    expectTypeOf<ReturnType<typeof client.useSetQueryData<'/users', '$post'>>>().toMatchTypeOf<
-      (data: {
-        data: { user: { id: string; name: string } }
-        status: 201
-        format: 'json'
-        headers: Record<string, string>
-      }) => {
-        data: { user: { id: string; name: string } }
-        status: 201
-        format: 'json'
-        headers: Record<string, string>
-      }
-    >()
+      const queryFn = () =>
+        client.useQuery('/users/:id', '$get', {
+          input: { param: { id: 'none' } },
+          options: { throwOnError: true },
+        })
 
-    expectTypeOf<ReturnType<typeof client.useInvalidateQueries<'/users', '$get'>>>().toMatchTypeOf<
-      () => void
-    >()
+      expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+        DefinedUseQueryResult<
+          {
+            data: {
+              user: {
+                id: string
+                name: string
+              }
+            }
+            status: 200
+            format: 'json'
+            headers: Record<string, string>
+          },
+          | Error
+          | HonoResponseError<
+              {
+                error: string
+              },
+              400,
+              'json'
+            >
+        >
+      >()
+    })
+  })
 
-    // /users/:id routes
+  describe('useSuspenseQuery', () => {
+    it('should contain Error in Data when throwOnError is false', () => {
+      const client = createReactQueryClient<BasicHonoApp>({
+        baseUrl: 'http://localhost:3000',
+      })
 
-    expectTypeOf<ReturnType<typeof client.useQuery<'/users/:id', '$get'>>>().toMatchTypeOf<
-      UseQueryResult<
-        { data: { user: { id: string; name: string } }; status: 200; format: 'json' },
-        Error | HonoResponseError<{ error: string }, 400, 'json'>
-      >
-    >()
+      const queryOptions = client.suspenseQueryOptions('/users/:id', '$get', {
+        input: {
+          param: { id: 'none' },
+        },
+        options: {
+          throwOnError: false,
+        },
+      })
 
-    expectTypeOf<ReturnType<typeof client.useGetQueryData<'/users/:id', '$get'>>>().toMatchTypeOf<
-      () => { data: { user: { id: string; name: string } }; status: 200; format: 'json' }
-    >()
+      expectTypeOf<typeof queryOptions>().toEqualTypeOf<
+        UseSuspenseQueryOptions<
+          | {
+              data: {
+                user: {
+                  id: string
+                  name: string
+                }
+              }
+              status: 200
+              format: 'json'
+              headers: Record<string, string>
+            }
+          | {
+              data: {
+                error: string
+              }
+              status: 400
+              format: 'json'
+              headers: Record<string, string>
+            },
+          Error
+        >
+      >()
 
-    expectTypeOf<
-      ReturnType<typeof client.useInvalidateQueries<'/users/:id', '$get'>>
-    >().toMatchTypeOf<() => void>()
+      const queryFn = () =>
+        client.useSuspenseQuery('/users/:id', '$get', {
+          input: { param: { id: 'none' } },
+          options: { throwOnError: false },
+        })
+
+      expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+        UseSuspenseQueryResult<
+          | {
+              data: {
+                user: {
+                  id: string
+                  name: string
+                }
+              }
+              status: 200
+              format: 'json'
+              headers: Record<string, string>
+            }
+          | {
+              data: {
+                error: string
+              }
+              status: 400
+              format: 'json'
+              headers: Record<string, string>
+            },
+          Error
+        >
+      >()
+    })
+
+    it('should not contain Error in Data when throwOnError is true', () => {
+      const client = createReactQueryClient<BasicHonoApp>({
+        baseUrl: 'http://localhost:3000',
+      })
+
+      const queryOptions = client.suspenseQueryOptions('/users/:id', '$get', {
+        input: {
+          param: { id: 'none' },
+        },
+      })
+
+      expectTypeOf<typeof queryOptions>().toEqualTypeOf<
+        UseSuspenseQueryOptions<
+          {
+            data: {
+              user: {
+                id: string
+                name: string
+              }
+            }
+            status: 200
+            format: 'json'
+            headers: Record<string, string>
+          },
+          Error | HonoResponseError<{ error: string }, 400, 'json'>
+        >
+      >()
+
+      const queryFn = () =>
+        client.useSuspenseQuery('/users/:id', '$get', {
+          input: { param: { id: 'none' } },
+          options: { throwOnError: true },
+        })
+
+      expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+        UseSuspenseQueryResult<
+          {
+            data: {
+              user: {
+                id: string
+                name: string
+              }
+            }
+            status: 200
+            format: 'json'
+            headers: Record<string, string>
+          },
+          | Error
+          | HonoResponseError<
+              {
+                error: string
+              },
+              400,
+              'json'
+            >
+        >
+      >()
+    })
+  })
+
+  describe('misc', () => {
+    it('should create the query client with the correct types', () => {
+      const client = createReactQueryClient<BasicHonoApp>({
+        baseUrl: 'http://localhost:3000',
+      })
+
+      // /users routes
+      expectTypeOf<ReturnType<typeof client.useQuery<'/users', '$get'>>>().toMatchTypeOf<
+        UseQueryResult<
+          { data: { users: { id: string; name: string }[] }; status: 200; format: 'json' },
+          Error | HonoResponseError<{ error: string }, 400, 'json'>
+        >
+      >()
+
+      expectTypeOf<ReturnType<typeof client.useMutation<'/users', '$post'>>>().toMatchTypeOf<
+        UseMutationResult<
+          { data: { user: { id: string; name: string } }; status: 201; format: 'json' },
+          Error | HonoResponseError<{ error: string }, 400, 'json'>,
+          {} | undefined
+        >
+      >()
+
+      expectTypeOf<ReturnType<typeof client.useGetQueryData<'/users', '$get'>>>().toMatchTypeOf<
+        () => { data: { users: { id: string; name: string }[] }; status: 200; format: 'json' }
+      >()
+
+      expectTypeOf<ReturnType<typeof client.useSetQueryData<'/users', '$post'>>>().toMatchTypeOf<
+        (data: {
+          data: { user: { id: string; name: string } }
+          status: 201
+          format: 'json'
+          headers: Record<string, string>
+        }) => {
+          data: { user: { id: string; name: string } }
+          status: 201
+          format: 'json'
+          headers: Record<string, string>
+        }
+      >()
+
+      expectTypeOf<
+        ReturnType<typeof client.useInvalidateQueries<'/users', '$get'>>
+      >().toMatchTypeOf<() => void>()
+
+      // /users/:id routes
+
+      expectTypeOf<ReturnType<typeof client.useQuery<'/users/:id', '$get'>>>().toMatchTypeOf<
+        UseQueryResult<
+          { data: { user: { id: string; name: string } }; status: 200; format: 'json' },
+          Error | HonoResponseError<{ error: string }, 400, 'json'>
+        >
+      >()
+
+      expectTypeOf<ReturnType<typeof client.useGetQueryData<'/users/:id', '$get'>>>().toMatchTypeOf<
+        () => { data: { user: { id: string; name: string } }; status: 200; format: 'json' }
+      >()
+
+      expectTypeOf<
+        ReturnType<typeof client.useInvalidateQueries<'/users/:id', '$get'>>
+      >().toMatchTypeOf<() => void>()
+    })
   })
 })
