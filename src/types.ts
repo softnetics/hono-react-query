@@ -8,6 +8,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 import type { Schema } from 'hono'
 import type { ClientRequest, ClientRequestOptions, ClientResponse } from 'hono/client'
@@ -99,6 +101,38 @@ export type UseHonoQuery<TApp extends Record<string, any>> = <
         ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
       >
 
+export type UseHonoSuspenseQuery<TApp extends Record<string, any>> = <
+  TPath extends keyof TApp,
+  TMethod extends keyof TApp[TPath],
+  TQueryOptions extends Omit<
+    UseSuspenseQueryOptions<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >,
+    'queryKey' | 'queryFn'
+  > = Omit<
+    UseSuspenseQueryOptions<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >,
+    'queryKey' | 'queryFn'
+  >,
+  TOptions extends HonoPayloadOptions | undefined = HonoPayloadOptions | undefined,
+>(
+  path: TPath,
+  method: TMethod,
+  honoPayload: HonoPayload<InferFunctionInput<TApp[TPath][TMethod]>, TOptions>,
+  queryOptions?: TQueryOptions
+) => TOptions extends { throwOnError: false }
+  ? UseSuspenseQueryResult<
+      ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      DefaultError
+    >
+  : UseSuspenseQueryResult<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >
+
 export type UseHonoMutation<TApp extends Record<string, any>> = <
   TPath extends keyof TApp,
   TMethod extends keyof TApp[TPath],
@@ -164,6 +198,38 @@ export type HonoQueryOptions<TApp extends Record<string, any>> = <
         SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
         ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
       >
+
+export type HonoSuspenseQueryOptions<TApp extends Record<string, any>> = <
+  TPath extends keyof TApp,
+  TMethod extends keyof TApp[TPath],
+  TQueryOptions extends Omit<
+    UseSuspenseQueryOptions<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >,
+    'queryKey' | 'queryFn'
+  > = Omit<
+    UseSuspenseQueryOptions<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >,
+    'queryKey' | 'queryFn'
+  >,
+  TOptions extends HonoPayloadOptions | undefined = HonoPayloadOptions | undefined,
+>(
+  path: TPath,
+  method: TMethod,
+  honoPayload: HonoPayload<InferFunctionInput<TApp[TPath][TMethod]>, TOptions>,
+  queryOptions?: TQueryOptions
+) => TOptions extends { throwOnError: false }
+  ? UseSuspenseQueryOptions<
+      ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      DefaultError
+    >
+  : UseSuspenseQueryOptions<
+      SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>,
+      ErrorResponse<InferFunctionReturn<TApp[TPath][TMethod]>> | Error
+    >
 
 export type HonoMutationOptions<TApp extends Record<string, any>> = <
   TPath extends keyof TApp,
@@ -240,8 +306,10 @@ export type UseHonoOptimisticUpdateQuery<TApp extends Record<string, any>> = <
 
 export type ReactQueryClient<TApp extends Record<string, any>> = {
   useQuery: UseHonoQuery<TApp>
+  useSuspenseQuery: UseHonoSuspenseQuery<TApp>
   useMutation: UseHonoMutation<TApp>
   queryOptions: HonoQueryOptions<TApp>
+  suspenseQueryOptions: HonoSuspenseQueryOptions<TApp>
   mutationOptions: HonoMutationOptions<TApp>
   useGetQueryData: UseHonoGetQueryData<TApp>
   useSetQueryData: UseHonoSetQueryData<TApp>

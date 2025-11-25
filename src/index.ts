@@ -1,4 +1,10 @@
-import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 import type { ClientRequestOptions, Hono } from 'hono'
 import { type ClientRequest, hc } from 'hono/client'
 import { useCallback } from 'hono/jsx'
@@ -10,6 +16,7 @@ import {
   type Client,
   type HonoMutationOptions,
   type HonoQueryOptions,
+  type HonoSuspenseQueryOptions,
   type InferUseHonoQuery,
   type ReactQueryClient,
   type UseHonoGetQueryData,
@@ -18,6 +25,7 @@ import {
   type UseHonoOptimisticUpdateQuery,
   type UseHonoQuery,
   type UseHonoSetQueryData,
+  type UseHonoSuspenseQuery,
 } from './types'
 
 interface CreateReactQueryClientOptions extends ClientRequestOptions {
@@ -35,8 +43,10 @@ function createReactQueryClient<T extends Hono>(
 
   return {
     useQuery: useQueryFactory(client),
+    useSuspenseQuery: useSuspenseQueryFactory(client),
     useMutation: useMutationFactory(client),
     queryOptions: queryOptionsFactory(client),
+    suspenseQueryOptions: suspenseQueryOptionsFactory(client),
     mutationOptions: mutationOptionsFactory(client),
     useGetQueryData: useGetQueryDataFactory(),
     useSetQueryData: useSetQueryDataFactory(),
@@ -87,16 +97,21 @@ async function responseParser(response: Response, throwOnError?: boolean): Promi
 function useQueryFactory<T extends Record<string, any>>(
   client: Record<string, ClientRequest<any>>
 ): UseHonoQuery<T> {
-  return ((path, method, honoPayload, hookOptions) => {
+  return (path, method, honoPayload, hookOptions) => {
     return useQuery(
-      queryOptionsFactory(client)(
-        path.toString(),
-        method,
-        honoPayload as any,
-        hookOptions as any
-      ) as any
+      queryOptionsFactory(client)(path.toString(), method, honoPayload as any, hookOptions as any)
     )
-  }) as UseHonoQuery<T>
+  }
+}
+
+function useSuspenseQueryFactory<T extends Record<string, any>>(
+  client: Record<string, ClientRequest<any>>
+): UseHonoSuspenseQuery<T> {
+  return (path, method, honoPayload, hookOptions) => {
+    return useSuspenseQuery(
+      suspenseQueryOptionsFactory(client)(path.toString(), method, honoPayload, hookOptions as any)
+    )
+  }
 }
 
 function queryOptionsFactory<T extends Record<string, any>>(
@@ -121,6 +136,31 @@ function queryOptionsFactory<T extends Record<string, any>>(
       },
       ...hookOptions,
     }) as any
+  }
+}
+
+function suspenseQueryOptionsFactory<T extends Record<string, any>>(
+  client: Record<string, ClientRequest<any>>
+): HonoSuspenseQueryOptions<T> {
+  return (path, method, honoPayload, hookOptions) => {
+    const paths = [...path.toString().split('/').filter(Boolean), method.toString()]
+    const handler = getter(client, paths)
+    const payload = (honoPayload as any)?.input ?? {}
+
+    const isThrowOnError = honoPayload.options?.throwOnError ?? true
+
+    return {
+      queryKey: createQueryKey(
+        method.toString(),
+        path.toString(),
+        Object.keys(payload).length > 0 ? payload : undefined
+      ),
+      queryFn: async () => {
+        const response = await handler(payload, honoPayload.options)
+        return responseParser(response, isThrowOnError)
+      },
+      ...hookOptions,
+    } as any
   }
 }
 
