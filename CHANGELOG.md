@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.3.0
+
+### Minor Changes
+
+- [#20](https://github.com/softnetics/hono-react-query/pull/20) [`ccb5740`](https://github.com/softnetics/hono-react-query/commit/ccb57407471cf7513af22e5346a50dd0bdc0fe5e) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Add support for `useSuspenseQuery` and `suspenseQueryOptions` and related types in the React Query Client
+
 ## 1.2.1
 
 ### Patch Changes
