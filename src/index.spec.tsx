@@ -38,6 +38,8 @@ describe('createReactQueryClient', () => {
       baseUrl: 'http://localhost:3000',
     })
 
+    expect(client.honoClient).toBeDefined()
+    expect(client.client).toBeDefined()
     expect(client.useQuery).toBeDefined()
     expect(client.useMutation).toBeDefined()
     expect(client.queryOptions).toBeDefined()
@@ -46,6 +48,42 @@ describe('createReactQueryClient', () => {
     expect(client.useSetQueryData).toBeDefined()
     expect(client.useInvalidateQueries).toBeDefined()
     expect(client.useOptimisticUpdateQuery).toBeDefined()
+  })
+
+  describe('client', () => {
+    it('should have typed arguments ', () => {
+      const client = createReactQueryClient<BasicHonoApp>({
+        baseUrl: 'http://localhost:3000',
+      })
+      const queryFn = () =>
+        client.client('/users/:id', '$get', {
+          param: { id: 'none' },
+        })
+
+      expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+        Promise<
+          | {
+              data: {
+                user: {
+                  id: string
+                  name: string
+                }
+              }
+              status: 200
+              format: 'json'
+              headers: Record<string, string>
+            }
+          | {
+              data: {
+                error: string
+              }
+              status: 400
+              format: 'json'
+              headers: Record<string, string>
+            }
+        >
+      >()
+    })
   })
 
   describe('useQuery', () => {

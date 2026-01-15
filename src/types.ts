@@ -56,7 +56,7 @@ type ErrorResponse<T> =
       >
     : never
 
-type HonoPayloadOptions = ClientRequestOptions & { throwOnError?: boolean }
+export type HonoPayloadOptions = ClientRequestOptions & { throwOnError?: boolean }
 export type HonoPayload<
   TInput,
   TOptions extends HonoPayloadOptions | undefined = HonoPayloadOptions | undefined,
@@ -305,6 +305,8 @@ export type UseHonoOptimisticUpdateQuery<TApp extends Record<string, any>> = <
   | undefined
 
 export type ReactQueryClient<TApp extends Record<string, any>> = {
+  honoClient: Record<string, ClientRequest<any>>
+  client: FlatClientFn<TApp>
   useQuery: UseHonoQuery<TApp>
   useSuspenseQuery: UseHonoSuspenseQuery<TApp>
   useMutation: UseHonoMutation<TApp>
@@ -319,3 +321,17 @@ export type ReactQueryClient<TApp extends Record<string, any>> = {
 
 export type InferUseHonoQuery<TQuery extends UseQueryResult<any, any>> =
   TQuery extends UseQueryResult<infer TData, any> ? TData : never
+
+export type FlatClientFn<TApp extends Record<string, any>> = <
+  TPath extends keyof TApp = keyof TApp,
+  TMethod extends keyof TApp[TPath] = keyof TApp[TPath],
+  TPayload extends InferFunctionInput<TApp[TPath][TMethod]> = InferFunctionInput<
+    TApp[TPath][TMethod]
+  >,
+  TOptions extends HonoPayloadOptions | undefined = HonoPayloadOptions | undefined,
+>(
+  path: TPath,
+  method: TMethod,
+  payload: TPayload,
+  options?: TOptions
+) => Promise<ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>>

@@ -14,7 +14,9 @@ import { HonoResponseError, isHonoResponseError } from './error'
 import { createQueryKey } from './query-key'
 import {
   type Client,
+  type FlatClientFn,
   type HonoMutationOptions,
+  type HonoPayloadOptions,
   type HonoQueryOptions,
   type HonoSuspenseQueryOptions,
   type InferUseHonoQuery,
@@ -40,8 +42,11 @@ function createReactQueryClient<T extends Hono>(
     : never
 > {
   const client = hc(options.baseUrl, options)
+  const flatClient = flatClientFactory(client)
 
   return {
+    client: flatClient,
+    honoClient: client,
     useQuery: useQueryFactory(client),
     useSuspenseQuery: useSuspenseQueryFactory(client),
     useMutation: useMutationFactory(client),
@@ -92,6 +97,18 @@ async function responseParser(response: Response, throwOnError?: boolean): Promi
   }
 
   throw new HonoResponseError(res)
+}
+
+function flatClientFactory<THono extends Record<string, any>>(
+  honoClient: Record<string, ClientRequest<any>>
+): FlatClientFn<THono> {
+  return (async (path: string, method: string, payload?: any, options?: HonoPayloadOptions) => {
+    const paths = [...path.toString().split('/').filter(Boolean), method.toString()]
+    const handler = getter(honoClient, paths)
+    const isThrowOnError = options?.throwOnError ?? true
+    const response = await handler(payload, options)
+    return responseParser(response, isThrowOnError)
+  }) as FlatClientFn<THono>
 }
 
 function useQueryFactory<T extends Record<string, any>>(
@@ -259,6 +276,8 @@ function useOptimisticUpdateQueryFactory<T extends Record<string, any>>() {
 export {
   createQueryKey,
   createReactQueryClient,
+  type Client as FlatClient,
+  type FlatClientFn,
   HonoResponseError,
   type InferUseHonoQuery,
   isHonoResponseError,
