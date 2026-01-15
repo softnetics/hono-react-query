@@ -105,9 +105,9 @@ function flatClientFactory<THono extends Record<string, any>>(
   return (async (path: string, method: string, payload?: any, options?: HonoPayloadOptions) => {
     const paths = [...path.toString().split('/').filter(Boolean), method.toString()]
     const handler = getter(honoClient, paths)
-    const isThrowOnError = options?.throwOnError ?? true
+    const throwOnError = options?.throwOnError ?? false // Note: Default to false for flat client
     const response = await handler(payload, options)
-    return responseParser(response, isThrowOnError)
+    return responseParser(response, throwOnError)
   }) as FlatClientFn<THono>
 }
 

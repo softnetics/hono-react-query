@@ -334,4 +334,8 @@ export type FlatClientFn<TApp extends Record<string, any>> = <
   method: TMethod,
   payload: TPayload,
   options?: TOptions
-) => Promise<ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>>
+) => Promise<
+  TOptions extends { throwOnError: true }
+    ? SuccessResponse<InferFunctionReturn<TApp[TPath][TMethod]>>
+    : ClientResponseParser<InferFunctionReturn<TApp[TPath][TMethod]>>
+>

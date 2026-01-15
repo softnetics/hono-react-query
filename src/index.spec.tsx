@@ -51,15 +51,11 @@ describe('createReactQueryClient', () => {
   })
 
   describe('client', () => {
-    it('should have typed arguments ', () => {
-      const client = createReactQueryClient<BasicHonoApp>({
-        baseUrl: 'http://localhost:3000',
-      })
-      const queryFn = () =>
-        client.client('/users/:id', '$get', {
-          param: { id: 'none' },
-        })
-
+    const client = createReactQueryClient<BasicHonoApp>({
+      baseUrl: 'http://localhost:3000',
+    })
+    it('should have typed arguments with return type', () => {
+      const queryFn = () => client.client('/users/:id', '$get', { param: { id: 'none' } })
       expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
         Promise<
           | {
@@ -82,6 +78,23 @@ describe('createReactQueryClient', () => {
               headers: Record<string, string>
             }
         >
+      >()
+    })
+    it('should not contain Error when throwOnError is true', () => {
+      const queryFn = () =>
+        client.client('/users/:id', '$get', { param: { id: 'none' } }, { throwOnError: true })
+      expectTypeOf<ReturnType<typeof queryFn>>().toEqualTypeOf<
+        Promise<{
+          data: {
+            user: {
+              id: string
+              name: string
+            }
+          }
+          status: 200
+          format: 'json'
+          headers: Record<string, string>
+        }>
       >()
     })
   })
