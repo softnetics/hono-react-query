@@ -27,7 +27,7 @@ export type Client<T> =
   T extends HonoBase<any, infer TSchema, any>
     ? TSchema extends Record<infer TPath, Schema>
       ? TPath extends string
-        ? { [K in TPath]: ClientRequest<TSchema[TPath]> }
+        ? { [K in TPath]: ClientRequest<'/', TPath, TSchema[TPath]> }
         : never
       : never
     : never

@@ -95,7 +95,7 @@ async function responseParser(response: Response, throwOnError?: boolean): Promi
 }
 
 function useQueryFactory<T extends Record<string, any>>(
-  client: Record<string, ClientRequest<any>>
+  client: Record<string, ClientRequest<any, any, any>>
 ): UseHonoQuery<T> {
   return (path, method, honoPayload, hookOptions) => {
     return useQuery(
@@ -105,7 +105,7 @@ function useQueryFactory<T extends Record<string, any>>(
 }
 
 function useSuspenseQueryFactory<T extends Record<string, any>>(
-  client: Record<string, ClientRequest<any>>
+  client: Record<string, ClientRequest<any, any, any>>
 ): UseHonoSuspenseQuery<T> {
   return (path, method, honoPayload, hookOptions) => {
     return useSuspenseQuery(
@@ -115,7 +115,7 @@ function useSuspenseQueryFactory<T extends Record<string, any>>(
 }
 
 function queryOptionsFactory<T extends Record<string, any>>(
-  client: Record<string, ClientRequest<any>>
+  client: Record<string, ClientRequest<any, any, any>>
 ): HonoQueryOptions<T> {
   return (path, method, honoPayload, hookOptions) => {
     const paths = [...path.toString().split('/').filter(Boolean), method.toString()]
@@ -140,7 +140,7 @@ function queryOptionsFactory<T extends Record<string, any>>(
 }
 
 function suspenseQueryOptionsFactory<T extends Record<string, any>>(
-  client: Record<string, ClientRequest<any>>
+  client: Record<string, ClientRequest<any, any, any>>
 ): HonoSuspenseQueryOptions<T> {
   return (path, method, honoPayload, hookOptions) => {
     const paths = [...path.toString().split('/').filter(Boolean), method.toString()]
@@ -165,7 +165,7 @@ function suspenseQueryOptionsFactory<T extends Record<string, any>>(
 }
 
 function useMutationFactory<T extends Record<string, any>>(
-  client: Record<string, ClientRequest<any>>
+  client: Record<string, ClientRequest<any, any, any>>
 ): UseHonoMutation<T> {
   return ((path, method, honoOptions, hookOptions) => {
     return useMutation(
@@ -175,7 +175,7 @@ function useMutationFactory<T extends Record<string, any>>(
 }
 
 function mutationOptionsFactory<T extends Record<string, any>>(
-  client: Record<string, ClientRequest<any>>
+  client: Record<string, ClientRequest<any, any, any>>
 ): HonoMutationOptions<T> {
   return ((path, method, honoOptions, hookOptions) => {
     const paths = [...path.toString().split('/').filter(Boolean), method.toString()]
