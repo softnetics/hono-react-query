@@ -1,5 +1,11 @@
 # @softnetics/hono-react-query
 
+## 1.3.1
+
+### Patch Changes
+
+- [#23](https://github.com/softnetics/hono-react-query/pull/23) [`0f2f7b7`](https://github.com/softnetics/hono-react-query/commit/0f2f7b701980168a2f56184ad3cc05f4a9fd118f) Thanks [@Anon-136](https://github.com/Anon-136)! - fix: update hono@4.11.4
+
 ## 1.3.0
 
 ### Minor Changes
