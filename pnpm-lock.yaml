@@ -12,8 +12,8 @@ importers:
         specifier: '>=5.71.5'
         version: 5.90.5(react@19.2.0)
       hono:
-        specifier: '>=4.10.1'
-        version: 4.10.1
+        specifier: '>=4.11.4'
+        version: 4.11.5
     devDependencies:
       '@changesets/changelog-github':
         specifier: ^0.5.1
@@ -1006,8 +1006,8 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  hono@4.10.1:
-    resolution: {integrity: sha512-rpGNOfacO4WEPClfkEt1yfl8cbu10uB1lNpiI33AKoiAHwOS8lV748JiLx4b5ozO/u4qLjIvfpFsPXdY5Qjkmg==}
+  hono@4.11.5:
+    resolution: {integrity: sha512-WemPi9/WfyMwZs+ZUXdiwcCh9Y+m7L+8vki9MzDw3jJ+W9Lc+12HGsd368Qc1vZi1xwW8BWMMsnK5efYKPdt4g==}
     engines: {node: '>=16.9.0'}
 
   human-id@4.1.2:
@@ -2701,7 +2701,7 @@ snapshots:
 
   has-flag@4.0.0: {}
 
-  hono@4.10.1: {}
+  hono@4.11.5: {}
 
   human-id@4.1.2: {}
 

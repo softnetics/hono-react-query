@@ -28,7 +28,7 @@
   },
   "peerDependencies": {
     "@tanstack/react-query": ">=5.71.5",
-    "hono": ">=4.10.1"
+    "hono": ">=4.11.4"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
